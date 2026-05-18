@@ -226,7 +226,7 @@ class _SpaceHubPageState extends State<SpaceHubPage>
                         left: 480,
                         bottom: 111 - float,
                         child: _PlanetButton(
-                          imagePath: 'assets/images/Book.png',
+                          imagePath: 'assets/images/book.png',
                           title: isArabic ? 'كوكب القصص' : 'Stories Planet',
                           active: false,
                           borderColor: BeyondTheme.violet,
@@ -238,7 +238,7 @@ class _SpaceHubPageState extends State<SpaceHubPage>
                         right: 160,
                         bottom: 45 + float,
                         child: _PlanetButton(
-                          imagePath: 'assets/images/WIN.png',
+                          imagePath: 'assets/images/Win.png',
                           title: isArabic
                               ? 'كوكب التحديات'
                               : 'Challenges Planet',
