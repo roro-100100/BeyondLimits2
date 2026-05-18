@@ -1,0 +1,69 @@
+name: a
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.8
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  animate_do: ^3.1.2
+  simple_animations: ^5.0.2
+  lottie: ^2.7.0
+  google_fonts: ^6.1.0
+  video_player: ^2.9.1
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+  audioplayers: ^6.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/AA.png
+    - assets/images/AAA.png 
+    - assets/images/girl.png
+    - assets/images/boy.png
+    - assets/images/ABC.png
+    - assets/images/Win.png
+    - assets/images/WORLD.png
+    - assets/images/book.png
+    - assets/audio/letters/qaf_loop.mp3
+    - assets/audio/letters/meem_loop.mp3
+    - assets/audio/letters/raa_loop.mp3
+    - assets/audio/letters/baa_loop.mp3
+    - assets/audio/letters/alif_loop.mp3
+    - assets/audio/letters/noon_loop.mp3
+    - assets/audio/letters/jeem_loop.mp3
+    - assets/audio/effects/magic_star.mp3
+    - assets/audio/effects/correct.mp3
+    - assets/audio/effects/clap.mp3
+    - assets/audio/effects/complete.mp3
+    - assets/audio/effects/wrong_soft.mp3
+    - assets/audio/words/bab.mp3
+    - assets/audio/words/bayt.mp3
+    - assets/audio/words/maa.mp3
+    - assets/audio/words/najm.mp3
+    - assets/audio/words/noor.mp3
+    - assets/audio/words/qamar.mp3
+
+
