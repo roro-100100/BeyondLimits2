@@ -40033,9 +40033,9 @@ j=o?"\u0643\u0648\u0643\u0628 \u0627\u0644\u0643\u0644\u0645\u0627\u062a":"Words
 j=A.bx(f,new A.mT("assets/images/WORLD.png",j,!0,B.bv,e.ga9f(),f),f,f,f,333,150-s,f)
 i=o?"\u0643\u0648\u0643\u0628 \u0627\u0644\u0642\u0635\u0635":"Stories Planet"
 h=e.gac0()
-i=A.bx(111-s,new A.mT("assets/images/Book.png",i,!1,B.fE,h,f),f,f,480,f,f,f)
+i=A.bx(111-s,new A.mT("assets/images/book.png",i,!1,B.fE,h,f),f,f,480,f,f,f)
 g=o?"\u0643\u0648\u0643\u0628 \u0627\u0644\u062a\u062d\u062f\u064a\u0627\u062a":"Challenges Planet"
-h=A.bx(45+s,new A.mT("assets/images/WIN.png",g,!1,B.co,h,f),f,f,f,160,f,f)
+h=A.bx(45+s,new A.mT("assets/images/Win.png",g,!1,B.co,h,f),f,f,f,160,f,f)
 o=o?"\u0639\u0627\u0644\u0645 \u0627\u0644\u0643\u0648\u0627\u0643\u0628":"Planet World"
 return A.cG(B.ak,A.c([d,r,q,A.kC(!0,new A.bY(B.DF,A.cG(B.ak,A.c([new A.N1(new A.al5(e,a),f),p,new A.dJ(B.ch,f,f,n,f),l,k,j,i,h,A.bx(8,A.ay(o,f,f,f,A.aM(f,f,A.R(191,B.e.m()>>>16&255,B.e.m()>>>8&255,B.e.m()&255),f,f,f,f,f,f,f,f,16,f,f,B.a0,f,f,!0,f,f,f,f,f,f,f,f),B.H,f),f,f,0,0,f,f)],m),B.w,B.a5),f),!0)],m),B.w,B.a5)},
 $S:65}
