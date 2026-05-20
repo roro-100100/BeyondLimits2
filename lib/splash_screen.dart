@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'language_selection_page.dart';
+import 'mission_selection_page.dart';
 import 'beyond_theme.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen>
   void _goNext() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const LanguageSelectionPage()),
+      MaterialPageRoute(builder: (_) => const MissionSelectionPage()),
     );
   }
 
@@ -132,38 +132,19 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
 
                 Positioned(
-                  bottom: 36,
+                  bottom: 42,
                   left: 0,
                   right: 0,
                   child: Center(
                     child: Opacity(
-                      opacity: 0.88,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 420,
-                            child: Text(
-                              'اضغط في أي مكان للانطلاق',
-                              textAlign: TextAlign.center,
-                              textDirection: TextDirection.rtl,
-                              style: _tapStyle(22, 0.95),
-                            ),
-                          ),
-
-                          const SizedBox(height: 7),
-
-                          SizedBox(
-                            width: 420,
-                            child: Text(
-                              'Tap anywhere to start',
-                              textAlign: TextAlign.center,
-                              textDirection: TextDirection.ltr,
-                              style: _tapStyle(17, 0.78),
-                            ),
-                          ),
-                        ],
+                      opacity: 0.90,
+                      child: SizedBox(
+                        width: 420,
+                        child: Text(
+                          'Tap anywhere to begin your space journey',
+                          textAlign: TextAlign.center,
+                          style: _tapStyle(20, 0.95),
+                        ),
                       ),
                     ),
                   ),

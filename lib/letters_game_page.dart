@@ -8,7 +8,6 @@ class LettersGamePage extends StatefulWidget {
   final String childName;
   final String praiseWord;
   final String characterImage;
-  final String userLanguage;
   final int totalStars;
   final int currentLevel;
 
@@ -17,7 +16,6 @@ class LettersGamePage extends StatefulWidget {
     required this.childName,
     required this.praiseWord,
     required this.characterImage,
-    required this.userLanguage,
     required this.totalStars,
     this.currentLevel = 1,
   });
@@ -48,8 +46,6 @@ class _LettersGamePageState extends State<LettersGamePage>
 
   List<String?> placedLetters = [];
   List<String> availableLetters = [];
-
-  bool get isArabic => widget.userLanguage == 'ar';
 
   int get displayedStars => widget.totalStars + earnedStars;
 
@@ -188,14 +184,19 @@ class _LettersGamePageState extends State<LettersGamePage>
     }
   }
 
-  void _nextStage() {
+  Future<void> _nextStage() async {
+    await _effectPlayer.stop();
+    await _letterPlayer.stop();
+
     if (stageIndex < stages.length - 1) {
       setState(() {
         stageIndex++;
       });
+
       _startStage();
     } else {
-      _playEffect('audio/effects/complete.mp3');
+      await _playEffect('audio/effects/complete.mp3');
+      if (!mounted) return;
       Navigator.pop(context, displayedStars);
     }
   }
@@ -208,10 +209,10 @@ class _LettersGamePageState extends State<LettersGamePage>
         backgroundColor: BeyondTheme.pink,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        content: Text(
-          isArabic ? 'حاول مرة ثانية ✨' : 'Try again ✨',
+        content: const Text(
+          'Try again ✨',
           textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -228,9 +229,11 @@ class _LettersGamePageState extends State<LettersGamePage>
           Positioned.fill(
             child: Image.asset('assets/images/AA.png', fit: BoxFit.cover),
           ),
+
           Positioned.fill(
             child: Container(color: Colors.black.withOpacity(0.30)),
           ),
+
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 56, vertical: 22),
@@ -239,37 +242,34 @@ class _LettersGamePageState extends State<LettersGamePage>
                   Row(
                     children: [
                       _CircleBackButton(
-                        onTap: () => Navigator.pop(context, displayedStars),
+                        onTap: () async {
+                          await _effectPlayer.stop();
+                          await _letterPlayer.stop();
+
+                          if (!mounted) return;
+                          Navigator.pop(context, displayedStars);
+                        },
                       ),
+
                       const Spacer(),
-                      _StageBox(
-                        stage: stageIndex + 1,
-                        total: stages.length,
-                        isArabic: isArabic,
-                      ),
+
+                      _StageBox(stage: stageIndex + 1, total: stages.length),
+
                       const SizedBox(width: 14),
+
                       _StarsBox(stars: displayedStars),
                     ],
                   ),
 
                   const SizedBox(height: 8),
 
-                  Text(
-                    isArabic ? 'كوكب الحروف' : 'Letters Planet',
-                    style: isArabic
-                        ? BeyondTheme.arabicTitle(size: 36)
-                        : BeyondTheme.title(size: 34),
-                  ),
+                  Text('Letters Planet', style: BeyondTheme.title(size: 34)),
 
                   const SizedBox(height: 6),
 
                   Text(
                     scattered
-                        ? isArabic
-                              ? 'اسحب الحروف ورجع كلمة $wordText'
-                              : 'Drag the letters to build $wordText'
-                        : isArabic
-                        ? 'اسمع الكلمة ثم انتظر النجم السحري ✨'
+                        ? 'Drag the Arabic letters to build $wordText'
                         : 'Listen to the word, then wait for the magic star ✨',
                     textAlign: TextAlign.center,
                     style: BeyondTheme.normalText(
@@ -419,11 +419,7 @@ class _LettersGamePageState extends State<LettersGamePage>
                                       decoration: BeyondTheme.glowButton(),
                                       child: Text(
                                         stageIndex < stages.length - 1
-                                            ? isArabic
-                                                  ? 'التالي ⭐'
-                                                  : 'Next ⭐'
-                                            : isArabic
-                                            ? 'إنهاء ⭐'
+                                            ? 'Next ⭐'
                                             : 'Finish ⭐',
                                         style: const TextStyle(
                                           color: Colors.white,
@@ -484,7 +480,7 @@ class _SpeechBubble extends StatelessWidget {
             ),
           ],
         ),
-        child: Text(text, style: BeyondTheme.arabicTitle(size: 22)),
+        child: Text(text, style: BeyondTheme.cardTitle(size: 22)),
       ),
     );
   }
@@ -507,7 +503,9 @@ class _BubbleTailPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
 }
 
 class _FullWord extends StatelessWidget {
@@ -701,13 +699,8 @@ class _StarsBox extends StatelessWidget {
 class _StageBox extends StatelessWidget {
   final int stage;
   final int total;
-  final bool isArabic;
 
-  const _StageBox({
-    required this.stage,
-    required this.total,
-    required this.isArabic,
-  });
+  const _StageBox({required this.stage, required this.total});
 
   @override
   Widget build(BuildContext context) {
@@ -718,7 +711,7 @@ class _StageBox extends StatelessWidget {
         radius: 22,
       ),
       child: Text(
-        isArabic ? 'المرحلة $stage / $total' : 'Level $stage / $total',
+        'Level $stage / $total',
         style: BeyondTheme.normalText(size: 18),
       ),
     );

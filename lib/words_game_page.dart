@@ -8,7 +8,6 @@ class WordsGamePage extends StatefulWidget {
   final String childName;
   final String praiseWord;
   final String characterImage;
-  final String userLanguage;
   final int totalStars;
   final int currentLevel;
 
@@ -17,7 +16,6 @@ class WordsGamePage extends StatefulWidget {
     required this.childName,
     required this.praiseWord,
     required this.characterImage,
-    required this.userLanguage,
     required this.totalStars,
     this.currentLevel = 1,
   });
@@ -28,11 +26,14 @@ class WordsGamePage extends StatefulWidget {
 
 class _WordsGamePageState extends State<WordsGamePage> {
   final AudioPlayer _effectPlayer = AudioPlayer();
+
   final AudioPlayer _wordPlayer = AudioPlayer();
 
   final List<_WordStage> stages = const [
     _WordStage(emoji: '🌙', correctWord: 'قمر', options: ['باب', 'قمر', 'نجم']),
+
     _WordStage(emoji: '🚪', correctWord: 'باب', options: ['باب', 'قمر', 'بيت']),
+
     _WordStage(emoji: '⭐', correctWord: 'نجم', options: ['نور', 'نجم', 'ماء']),
   ];
 
@@ -42,14 +43,13 @@ class _WordsGamePageState extends State<WordsGamePage> {
   bool completed = false;
   bool showPraiseBubble = false;
 
-  bool get isArabic => widget.userLanguage == 'ar';
-
   int get displayedStars => widget.totalStars + earnedStars;
 
   _WordStage get currentStage => stages[stageIndex];
 
   Future<void> _playEffect(String path) async {
     await _effectPlayer.stop();
+
     await _effectPlayer.play(AssetSource(path));
   }
 
@@ -57,30 +57,44 @@ class _WordsGamePageState extends State<WordsGamePage> {
     switch (word) {
       case 'قمر':
         return 'audio/words/qamar.mp3';
+
       case 'باب':
         return 'audio/words/bab.mp3';
+
       case 'نجم':
         return 'audio/words/najm.mp3';
+
       case 'بيت':
         return 'audio/words/bayt.mp3';
+
       case 'نور':
         return 'audio/words/noor.mp3';
+
       case 'ماء':
         return 'audio/words/maa.mp3';
     }
+
     return null;
   }
 
   Future<void> _playWordOnce(String word) async {
     final path = _wordSoundPath(word);
+
     if (path == null) return;
 
     await _wordPlayer.stop();
+
     await _wordPlayer.setReleaseMode(ReleaseMode.release);
+
     await _wordPlayer.play(AssetSource(path));
   }
 
-  void _goBack() {
+  void _goBack() async {
+    await _effectPlayer.stop();
+    await _wordPlayer.stop();
+
+    if (!mounted) return;
+
     Navigator.pop(context, displayedStars);
   }
 
@@ -117,10 +131,10 @@ class _WordsGamePageState extends State<WordsGamePage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),
-          content: Text(
-            isArabic ? 'حاول مرة ثانية ✨' : 'Try again ✨',
+          content: const Text(
+            'Try again ✨',
             textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
       );
@@ -138,6 +152,9 @@ class _WordsGamePageState extends State<WordsGamePage> {
       });
     } else {
       await _playEffect('audio/effects/complete.mp3');
+
+      if (!mounted) return;
+
       Navigator.pop(context, displayedStars);
     }
   }
@@ -146,6 +163,7 @@ class _WordsGamePageState extends State<WordsGamePage> {
   void dispose() {
     _effectPlayer.dispose();
     _wordPlayer.dispose();
+
     super.dispose();
   }
 
@@ -153,6 +171,7 @@ class _WordsGamePageState extends State<WordsGamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: BeyondTheme.bgDark,
+
       body: Stack(
         children: [
           Positioned.fill(
@@ -166,37 +185,31 @@ class _WordsGamePageState extends State<WordsGamePage> {
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 56, vertical: 22),
+
               child: Column(
                 children: [
                   Row(
                     children: [
                       _CircleBackButton(onTap: _goBack),
+
                       const Spacer(),
-                      _StageBox(
-                        stage: stageIndex + 1,
-                        total: stages.length,
-                        isArabic: isArabic,
-                      ),
+
+                      _StageBox(stage: stageIndex + 1, total: stages.length),
+
                       const SizedBox(width: 14),
+
                       _StarsBox(stars: displayedStars),
                     ],
                   ),
 
                   const SizedBox(height: 8),
 
-                  Text(
-                    isArabic ? 'كوكب الكلمات' : 'Words Planet',
-                    style: isArabic
-                        ? BeyondTheme.arabicTitle(size: 36)
-                        : BeyondTheme.title(size: 34),
-                  ),
+                  Text('Words Planet', style: BeyondTheme.title(size: 34)),
 
                   const SizedBox(height: 6),
 
                   Text(
-                    isArabic
-                        ? 'اضغط على الكلمة لسماعها واختر الإجابة الصحيحة'
-                        : 'Tap a word to hear it and choose the correct answer',
+                    'Tap a word to hear it and choose the correct answer',
                     textAlign: TextAlign.center,
                     style: BeyondTheme.normalText(
                       size: 19,
@@ -209,16 +222,20 @@ class _WordsGamePageState extends State<WordsGamePage> {
                   Expanded(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(38),
+
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+
                         child: Container(
                           width: double.infinity,
+
                           decoration: BeyondTheme.mirrorNeonPanel(
                             borderColor: completed
                                 ? BeyondTheme.yellow
                                 : BeyondTheme.pink,
                             radius: 38,
                           ),
+
                           child: Stack(
                             children: [
                               Positioned(
@@ -244,9 +261,11 @@ class _WordsGamePageState extends State<WordsGamePage> {
                               Center(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
+
                                   children: [
                                     Text(
                                       currentStage.emoji,
+
                                       style: const TextStyle(
                                         fontSize: 105,
                                         shadows: [
@@ -262,8 +281,11 @@ class _WordsGamePageState extends State<WordsGamePage> {
 
                                     Wrap(
                                       alignment: WrapAlignment.center,
+
                                       spacing: 22,
+
                                       runSpacing: 18,
+
                                       children: currentStage.options.map((
                                         word,
                                       ) {
@@ -273,8 +295,11 @@ class _WordsGamePageState extends State<WordsGamePage> {
 
                                         return _WordOption(
                                           word: word,
+
                                           selected: isCorrect,
+
                                           disabled: completed,
+
                                           onTap: () => _chooseWord(word),
                                         );
                                       }).toList(),
@@ -287,23 +312,25 @@ class _WordsGamePageState extends State<WordsGamePage> {
                                 Positioned(
                                   right: 35,
                                   bottom: 35,
+
                                   child: InkWell(
                                     onTap: _nextStage,
+
                                     borderRadius: BorderRadius.circular(40),
+
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 34,
                                         vertical: 14,
                                       ),
+
                                       decoration: BeyondTheme.glowButton(),
+
                                       child: Text(
                                         stageIndex < stages.length - 1
-                                            ? isArabic
-                                                  ? 'التالي ⭐'
-                                                  : 'Next ⭐'
-                                            : isArabic
-                                            ? 'الرجوع للمسار ⭐'
+                                            ? 'Next ⭐'
                                             : 'Back to Path ⭐',
+
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 20,
@@ -370,59 +397,75 @@ class _WordOptionState extends State<_WordOption> {
           setState(() => hover = true);
         }
       },
+
       onExit: (_) {
         setState(() {
           hover = false;
           pressed = false;
         });
       },
+
       child: GestureDetector(
         onTapDown: (_) {
           if (!widget.disabled) {
             setState(() => pressed = true);
           }
         },
+
         onTapUp: (_) {
           if (!widget.disabled) {
             setState(() => pressed = false);
+
             widget.onTap();
           }
         },
+
         onTapCancel: () {
           setState(() => pressed = false);
         },
+
         child: AnimatedScale(
           scale: pressed
               ? 1.10
               : hover
               ? 1.07
               : 1,
+
           duration: const Duration(milliseconds: 160),
+
           curve: Curves.easeOutBack,
+
           child: Container(
             width: 150,
             height: 78,
+
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(28),
+
               gradient: LinearGradient(
                 colors: widget.selected || pressed
                     ? const [Color(0xFFFFD84D), Color(0xFFFF8A00)]
                     : const [Color(0xFF7DF9FF), Color(0xFF6A00FF)],
               ),
+
               border: Border.all(color: Colors.white, width: 2),
+
               boxShadow: [
                 BoxShadow(
                   color: widget.selected || pressed
                       ? BeyondTheme.yellow.withOpacity(0.70)
                       : BeyondTheme.cyan.withOpacity(0.45),
+
                   blurRadius: 26,
                   spreadRadius: 2,
                 ),
               ],
             ),
+
             child: Center(
               child: Text(
                 widget.word,
+
                 style: const TextStyle(
                   fontSize: 34,
                   fontWeight: FontWeight.w900,
@@ -446,20 +489,27 @@ class _SpeechBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _BubbleTailPainter(),
+
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+
         decoration: BoxDecoration(
           color: BeyondTheme.bgDark.withOpacity(0.88),
+
           borderRadius: BorderRadius.circular(26),
+
           border: Border.all(color: BeyondTheme.cyan, width: 2),
+
           boxShadow: [
             BoxShadow(
               color: BeyondTheme.cyan.withOpacity(0.45),
+
               blurRadius: 22,
             ),
           ],
         ),
-        child: Text(text, style: BeyondTheme.arabicTitle(size: 22)),
+
+        child: Text(text, style: BeyondTheme.cardTitle(size: 22)),
       ),
     );
   }
@@ -482,7 +532,9 @@ class _BubbleTailPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
 }
 
 class _StarsBox extends StatelessWidget {
@@ -494,14 +546,18 @@ class _StarsBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+
       decoration: BeyondTheme.mirrorNeonPanel(
         borderColor: BeyondTheme.yellow,
         radius: 22,
       ),
+
       child: Row(
         children: [
           const Text('⭐', style: TextStyle(fontSize: 24)),
+
           const SizedBox(width: 8),
+
           Text('$stars', style: BeyondTheme.normalText(size: 18)),
         ],
       ),
@@ -512,24 +568,21 @@ class _StarsBox extends StatelessWidget {
 class _StageBox extends StatelessWidget {
   final int stage;
   final int total;
-  final bool isArabic;
 
-  const _StageBox({
-    required this.stage,
-    required this.total,
-    required this.isArabic,
-  });
+  const _StageBox({required this.stage, required this.total});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+
       decoration: BeyondTheme.mirrorNeonPanel(
         borderColor: BeyondTheme.cyan,
         radius: 22,
       ),
+
       child: Text(
-        isArabic ? 'المرحلة $stage / $total' : 'Level $stage / $total',
+        'Level $stage / $total',
         style: BeyondTheme.normalText(size: 18),
       ),
     );
@@ -546,20 +599,27 @@ class _CircleBackButton extends StatelessWidget {
     return ClipOval(
       child: InkWell(
         onTap: onTap,
+
         child: Container(
           width: 54,
           height: 54,
+
           decoration: BoxDecoration(
             shape: BoxShape.circle,
+
             border: Border.all(color: BeyondTheme.cyan, width: 2),
+
             color: Colors.white.withOpacity(0.10),
+
             boxShadow: [
               BoxShadow(
                 color: BeyondTheme.cyan.withOpacity(0.35),
+
                 blurRadius: 18,
               ),
             ],
           ),
+
           child: const Icon(
             Icons.arrow_back_rounded,
             color: Colors.white,

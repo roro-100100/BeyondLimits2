@@ -3,29 +3,15 @@ import 'package:flutter/material.dart';
 
 import 'beyond_theme.dart';
 import 'character_selection_page.dart';
-import 'language_selection_page.dart';
+import 'splash_screen.dart';
 
 class MissionSelectionPage extends StatelessWidget {
-  final String userLanguage;
-  final int totalStars;
-
-  const MissionSelectionPage({
-    super.key,
-    required this.userLanguage,
-    required this.totalStars,
-  });
-
-  bool get isArabic => userLanguage == 'ar';
+  const MissionSelectionPage({super.key});
 
   void _goCharacter(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => CharacterSelectionPage(
-          userLanguage: userLanguage,
-          totalStars: totalStars,
-        ),
-      ),
+      MaterialPageRoute(builder: (_) => const CharacterSelectionPage()),
     );
   }
 
@@ -35,10 +21,10 @@ class MissionSelectionPage extends StatelessWidget {
         backgroundColor: BeyondTheme.purple,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        content: Text(
-          isArabic ? 'قريبًا ✨' : 'Coming Soon ✨',
+        content: const Text(
+          'Coming Soon ✨',
           textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -46,17 +32,6 @@ class MissionSelectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pageTitle = isArabic ? '⭐ مهمة العمر ⭐' : '⭐ AGE MISSION ⭐';
-    final mainTitle = isArabic
-        ? 'اختر مرحلتك العمرية'
-        : 'Choose your age level';
-    final subtitle = isArabic
-        ? 'كل مرحلة مناسبة لعمر الطفل'
-        : 'Each level is designed for the child age';
-    final bottomText = isArabic
-        ? 'كل مرحلة مصممة بطريقة مناسبة لعمر الطفل'
-        : 'Each level is designed for the child age';
-
     return Scaffold(
       backgroundColor: BeyondTheme.bgDark,
       body: Stack(
@@ -93,7 +68,7 @@ class MissionSelectionPage extends StatelessWidget {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const LanguageSelectionPage(),
+                              builder: (_) => const SplashScreen(),
                             ),
                           );
                         },
@@ -114,11 +89,9 @@ class MissionSelectionPage extends StatelessWidget {
                               borderColor: BeyondTheme.violet,
                             ),
                             child: Text(
-                              pageTitle,
+                              '🚀 SPACE MISSIONS 🚀',
                               textAlign: TextAlign.center,
-                              style: isArabic
-                                  ? BeyondTheme.arabicTitle(size: 30)
-                                  : BeyondTheme.title(size: 30),
+                              style: BeyondTheme.title(size: 30),
                             ),
                           ),
                         ),
@@ -126,27 +99,22 @@ class MissionSelectionPage extends StatelessWidget {
 
                       const Spacer(),
 
-                      _StarsBadge(totalStars: totalStars),
+                      const _StarsBadge(totalStars: 0),
                     ],
                   ),
 
                   const SizedBox(height: 18),
 
                   Text(
-                    mainTitle,
-                    textDirection: isArabic
-                        ? TextDirection.rtl
-                        : TextDirection.ltr,
+                    'Choose Your Mission',
                     textAlign: TextAlign.center,
-                    style: isArabic
-                        ? BeyondTheme.arabicTitle(size: 31)
-                        : BeyondTheme.title(size: 29),
+                    style: BeyondTheme.title(size: 31),
                   ),
 
                   const SizedBox(height: 6),
 
                   Text(
-                    subtitle,
+                    'Each mission is designed for a different age level',
                     textAlign: TextAlign.center,
                     style: BeyondTheme.normalText(
                       size: 16,
@@ -161,14 +129,11 @@ class MissionSelectionPage extends StatelessWidget {
                       Expanded(
                         child: _MissionCard(
                           icon: '🚀',
-                          title: isArabic
-                              ? 'مستكشفين الفضاء'
-                              : 'Space Explorers',
+                          title: 'Space Explorers',
                           age: 'KG 1 - KG 3',
-                          hint: isArabic ? 'ابدأ الرحلة' : 'Start Mission',
+                          hint: 'Start Mission',
                           borderColor: BeyondTheme.cyan,
                           locked: false,
-                          isArabic: isArabic,
                           onTap: () => _goCharacter(context),
                         ),
                       ),
@@ -178,12 +143,11 @@ class MissionSelectionPage extends StatelessWidget {
                       Expanded(
                         child: _MissionCard(
                           icon: '🏆',
-                          title: isArabic ? 'أبطال الفضاء' : 'Space Heroes',
+                          title: 'Space Heroes',
                           age: 'Grade 1 - Grade 3',
-                          hint: isArabic ? 'قريبًا' : 'Coming Soon',
+                          hint: 'Coming Soon',
                           borderColor: BeyondTheme.violet,
                           locked: true,
-                          isArabic: isArabic,
                           onTap: () => _lockedMessage(context),
                         ),
                       ),
@@ -193,12 +157,11 @@ class MissionSelectionPage extends StatelessWidget {
                       Expanded(
                         child: _MissionCard(
                           icon: '🧑‍🚀',
-                          title: isArabic ? 'رواد الفضاء' : 'Space Astronauts',
+                          title: 'Space Astronauts',
                           age: 'Grade 4 - Grade 6',
-                          hint: isArabic ? 'قريبًا' : 'Coming Soon',
+                          hint: 'Coming Soon',
                           borderColor: BeyondTheme.orange,
                           locked: true,
-                          isArabic: isArabic,
                           onTap: () => _lockedMessage(context),
                         ),
                       ),
@@ -208,7 +171,7 @@ class MissionSelectionPage extends StatelessWidget {
                   const Spacer(),
 
                   Text(
-                    bottomText,
+                    'Learn Arabic through fun space adventures',
                     textAlign: TextAlign.center,
                     style: BeyondTheme.normalText(
                       size: 16,
@@ -232,7 +195,6 @@ class _MissionCard extends StatefulWidget {
   final String hint;
   final Color borderColor;
   final bool locked;
-  final bool isArabic;
   final VoidCallback onTap;
 
   const _MissionCard({
@@ -242,7 +204,6 @@ class _MissionCard extends StatefulWidget {
     required this.hint,
     required this.borderColor,
     required this.locked,
-    required this.isArabic,
     required this.onTap,
   });
 
@@ -289,9 +250,7 @@ class _MissionCardState extends State<_MissionCard> {
                       ),
 
                     Column(
-                      crossAxisAlignment: widget.isArabic
-                          ? CrossAxisAlignment.end
-                          : CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(widget.icon, style: const TextStyle(fontSize: 52)),
 
@@ -299,15 +258,7 @@ class _MissionCardState extends State<_MissionCard> {
 
                         Text(
                           widget.title,
-                          textDirection: widget.isArabic
-                              ? TextDirection.rtl
-                              : TextDirection.ltr,
-                          textAlign: widget.isArabic
-                              ? TextAlign.right
-                              : TextAlign.left,
-                          style: widget.isArabic
-                              ? BeyondTheme.arabicTitle(size: 25)
-                              : BeyondTheme.cardTitle(size: 25),
+                          style: BeyondTheme.cardTitle(size: 25),
                         ),
 
                         const SizedBox(height: 12),
@@ -331,9 +282,6 @@ class _MissionCardState extends State<_MissionCard> {
                         const SizedBox(height: 14),
 
                         Row(
-                          textDirection: widget.isArabic
-                              ? TextDirection.rtl
-                              : TextDirection.ltr,
                           children: [
                             Text(
                               widget.hint,

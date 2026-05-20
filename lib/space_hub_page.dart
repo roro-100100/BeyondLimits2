@@ -10,8 +10,6 @@ class SpaceHubPage extends StatefulWidget {
   final String childName;
   final String praiseWord;
   final String characterImage;
-
-  final String userLanguage;
   final int totalStars;
 
   const SpaceHubPage({
@@ -19,7 +17,6 @@ class SpaceHubPage extends StatefulWidget {
     required this.childName,
     required this.praiseWord,
     required this.characterImage,
-    required this.userLanguage,
     required this.totalStars,
   });
 
@@ -32,8 +29,6 @@ class _SpaceHubPageState extends State<SpaceHubPage>
   late final AnimationController _move;
 
   late int currentStars;
-
-  bool get isArabic => widget.userLanguage == 'ar';
 
   @override
   void initState() {
@@ -59,10 +54,10 @@ class _SpaceHubPageState extends State<SpaceHubPage>
         backgroundColor: BeyondTheme.purple,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        content: Text(
-          isArabic ? 'قريبًا ✨' : 'Coming Soon ✨',
+        content: const Text(
+          'Coming Soon ✨',
           textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -76,7 +71,6 @@ class _SpaceHubPageState extends State<SpaceHubPage>
           childName: widget.childName,
           praiseWord: widget.praiseWord,
           characterImage: widget.characterImage,
-          userLanguage: widget.userLanguage,
           totalStars: currentStars,
         ),
       ),
@@ -97,7 +91,6 @@ class _SpaceHubPageState extends State<SpaceHubPage>
           childName: widget.childName,
           praiseWord: widget.praiseWord,
           characterImage: widget.characterImage,
-          userLanguage: widget.userLanguage,
           totalStars: currentStars,
         ),
       ),
@@ -144,10 +137,7 @@ class _SpaceHubPageState extends State<SpaceHubPage>
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => CharacterSelectionPage(
-                                userLanguage: widget.userLanguage,
-                                totalStars: currentStars,
-                              ),
+                              builder: (_) => const CharacterSelectionPage(),
                             ),
                           );
                         },
@@ -165,20 +155,14 @@ class _SpaceHubPageState extends State<SpaceHubPage>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              isArabic
-                                  ? 'أهلًا يا ${widget.childName}'
-                                  : 'Welcome ${widget.childName}',
-                              style: isArabic
-                                  ? BeyondTheme.arabicTitle(size: 34)
-                                  : BeyondTheme.title(size: 32),
+                              'Welcome ${widget.childName}',
+                              style: BeyondTheme.title(size: 32),
                             ),
 
                             const SizedBox(height: 4),
 
                             Text(
-                              isArabic
-                                  ? 'اختر كوكبك التعليمي'
-                                  : 'Choose Your Learning Planet',
+                              'Choose Your Learning Planet',
                               style: BeyondTheme.normalText(
                                 size: 18,
                                 color: Colors.white.withOpacity(0.85),
@@ -203,7 +187,7 @@ class _SpaceHubPageState extends State<SpaceHubPage>
                         top: 105 + float,
                         child: _PlanetButton(
                           imagePath: 'assets/images/ABC.png',
-                          title: isArabic ? 'كوكب الحروف' : 'Letters Planet',
+                          title: 'Letters Planet',
                           active: true,
                           borderColor: BeyondTheme.cyan,
                           onTap: _openLettersPlanet,
@@ -215,7 +199,7 @@ class _SpaceHubPageState extends State<SpaceHubPage>
                         top: 150 - float,
                         child: _PlanetButton(
                           imagePath: 'assets/images/WORLD.png',
-                          title: isArabic ? 'كوكب الكلمات' : 'Words Planet',
+                          title: 'Words Planet',
                           active: true,
                           borderColor: BeyondTheme.pink,
                           onTap: _openWordsPlanet,
@@ -227,7 +211,7 @@ class _SpaceHubPageState extends State<SpaceHubPage>
                         bottom: 111 - float,
                         child: _PlanetButton(
                           imagePath: 'assets/images/book.png',
-                          title: isArabic ? 'كوكب القصص' : 'Stories Planet',
+                          title: 'Stories Planet',
                           active: false,
                           borderColor: BeyondTheme.violet,
                           onTap: _soon,
@@ -239,9 +223,7 @@ class _SpaceHubPageState extends State<SpaceHubPage>
                         bottom: 45 + float,
                         child: _PlanetButton(
                           imagePath: 'assets/images/Win.png',
-                          title: isArabic
-                              ? 'كوكب التحديات'
-                              : 'Challenges Planet',
+                          title: 'Challenges Planet',
                           active: false,
                           borderColor: BeyondTheme.orange,
                           onTap: _soon,
@@ -253,7 +235,7 @@ class _SpaceHubPageState extends State<SpaceHubPage>
                         left: 0,
                         right: 0,
                         child: Text(
-                          isArabic ? 'عالم الكواكب' : 'Planet World',
+                          'Planet World',
                           textAlign: TextAlign.center,
                           style: BeyondTheme.normalText(
                             size: 16,
@@ -343,7 +325,7 @@ class _PlanetButtonState extends State<_PlanetButton> {
                     ),
                     child: Text(
                       widget.title,
-                      style: BeyondTheme.arabicTitle(size: 20),
+                      style: BeyondTheme.cardTitle(size: 20),
                     ),
                   ),
                 ),
@@ -414,7 +396,9 @@ class _StarPathPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
 }
 
 class _StarsBox extends StatelessWidget {
@@ -437,7 +421,9 @@ class _StarsBox extends StatelessWidget {
           child: Row(
             children: [
               const Text('⭐', style: TextStyle(fontSize: 24)),
+
               const SizedBox(width: 8),
+
               Text('$stars', style: BeyondTheme.normalText(size: 18)),
             ],
           ),

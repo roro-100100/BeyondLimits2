@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 import 'beyond_theme.dart';
 import 'letters_game_page.dart';
+import 'space_hub_page.dart';
 
 class LettersPathPage extends StatefulWidget {
   final String childName;
   final String praiseWord;
   final String characterImage;
-  final String userLanguage;
   final int totalStars;
 
   const LettersPathPage({
@@ -16,7 +16,6 @@ class LettersPathPage extends StatefulWidget {
     required this.childName,
     required this.praiseWord,
     required this.characterImage,
-    required this.userLanguage,
     required this.totalStars,
   });
 
@@ -29,9 +28,8 @@ class _LettersPathPageState extends State<LettersPathPage>
   late final AnimationController _floatController;
 
   final int unlockedLevel = 1;
-  late int currentStars;
 
-  bool get isArabic => widget.userLanguage == 'ar';
+  late int currentStars;
 
   @override
   void initState() {
@@ -52,7 +50,17 @@ class _LettersPathPageState extends State<LettersPathPage>
   }
 
   void _goHome() {
-    Navigator.pop(context, currentStars);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SpaceHubPage(
+          childName: widget.childName,
+          praiseWord: widget.praiseWord,
+          characterImage: widget.characterImage,
+          totalStars: currentStars,
+        ),
+      ),
+    );
   }
 
   void _lockedMessage() {
@@ -61,12 +69,10 @@ class _LettersPathPageState extends State<LettersPathPage>
         backgroundColor: BeyondTheme.purple,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        content: Text(
-          isArabic
-              ? 'أنهِ المرحلة السابقة أولًا ✨'
-              : 'Finish the previous level first ✨',
+        content: const Text(
+          'Finish the previous level first ✨',
           textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -80,7 +86,6 @@ class _LettersPathPageState extends State<LettersPathPage>
           childName: widget.childName,
           praiseWord: widget.praiseWord,
           characterImage: widget.characterImage,
-          userLanguage: widget.userLanguage,
           totalStars: currentStars,
         ),
       ),
@@ -138,23 +143,14 @@ class _LettersPathPageState extends State<LettersPathPage>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              isArabic
-                                  ? 'مسار كوكب الحروف'
-                                  : 'Letters Planet Path',
-                              textDirection: isArabic
-                                  ? TextDirection.rtl
-                                  : TextDirection.ltr,
-                              style: isArabic
-                                  ? BeyondTheme.arabicTitle(size: 36)
-                                  : BeyondTheme.title(size: 34),
+                              'Letters Planet Path',
+                              style: BeyondTheme.title(size: 34),
                             ),
 
                             const SizedBox(height: 8),
 
                             Text(
-                              isArabic
-                                  ? 'اصعد من جبل طويق حتى تصل إلى الفضاء 🚀'
-                                  : 'Climb from Tuwaiq Mountain to space 🚀',
+                              'Climb from Tuwaiq Mountain to space 🚀',
                               textAlign: TextAlign.center,
                               style: BeyondTheme.normalText(
                                 size: 18,
@@ -182,7 +178,6 @@ class _LettersPathPageState extends State<LettersPathPage>
                           number: 1,
                           unlocked: unlockedLevel >= 1,
                           glow: BeyondTheme.yellow,
-                          isArabic: isArabic,
                           onTap: _openLevelOne,
                         ),
                       ),
@@ -194,7 +189,6 @@ class _LettersPathPageState extends State<LettersPathPage>
                           number: 2,
                           unlocked: unlockedLevel >= 2,
                           glow: BeyondTheme.cyan,
-                          isArabic: isArabic,
                           onTap: _lockedMessage,
                         ),
                       ),
@@ -206,7 +200,6 @@ class _LettersPathPageState extends State<LettersPathPage>
                           number: 3,
                           unlocked: unlockedLevel >= 3,
                           glow: BeyondTheme.pink,
-                          isArabic: isArabic,
                           onTap: _lockedMessage,
                         ),
                       ),
@@ -218,7 +211,6 @@ class _LettersPathPageState extends State<LettersPathPage>
                           number: 4,
                           unlocked: unlockedLevel >= 4,
                           glow: BeyondTheme.orange,
-                          isArabic: isArabic,
                           onTap: _lockedMessage,
                         ),
                       ),
@@ -238,14 +230,12 @@ class _LevelStar extends StatefulWidget {
   final int number;
   final bool unlocked;
   final Color glow;
-  final bool isArabic;
   final VoidCallback onTap;
 
   const _LevelStar({
     required this.number,
     required this.unlocked,
     required this.glow,
-    required this.isArabic,
     required this.onTap,
   });
 
@@ -309,9 +299,7 @@ class _LevelStarState extends State<_LevelStar> {
                       border: Border.all(color: widget.glow, width: 1.5),
                     ),
                     child: Text(
-                      widget.isArabic
-                          ? 'المرحلة ${widget.number}'
-                          : 'Level ${widget.number}',
+                      'Level ${widget.number}',
                       style: BeyondTheme.normalText(size: 15),
                     ),
                   ),
@@ -346,7 +334,9 @@ class _StarsBadge extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text('⭐', style: TextStyle(fontSize: 24)),
+
               const SizedBox(width: 8),
+
               Text('$totalStars', style: BeyondTheme.normalText(size: 18)),
             ],
           ),
@@ -403,7 +393,9 @@ class _TuwaiqSpacePathPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
 }
 
 class _HomeButton extends StatelessWidget {

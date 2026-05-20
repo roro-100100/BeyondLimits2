@@ -6,14 +6,7 @@ import 'mission_selection_page.dart';
 import 'space_hub_page.dart';
 
 class CharacterSelectionPage extends StatefulWidget {
-  final String userLanguage;
-  final int totalStars;
-
-  const CharacterSelectionPage({
-    super.key,
-    required this.userLanguage,
-    required this.totalStars,
-  });
+  const CharacterSelectionPage({super.key});
 
   @override
   State<CharacterSelectionPage> createState() => _CharacterSelectionPageState();
@@ -24,36 +17,26 @@ class _CharacterSelectionPageState extends State<CharacterSelectionPage> {
 
   int selectedIndex = 0;
 
-  bool get isArabic => widget.userLanguage == 'ar';
-
   final List<_CharacterOption> characters = const [
     _CharacterOption(
-      titleAr: 'رائد الفضاء',
-      titleEn: 'Boy Astronaut',
+      title: 'Boy Astronaut',
       imagePath: 'assets/images/boy.png',
       glow: BeyondTheme.blue,
-      praiseWordAr: 'أحسنت يا',
-      praiseWordEn: 'Great job',
+      praiseWord: 'Great job',
     ),
+
     _CharacterOption(
-      titleAr: 'رائدة الفضاء',
-      titleEn: 'Girl Astronaut',
+      title: 'Girl Astronaut',
       imagePath: 'assets/images/girl.png',
       glow: BeyondTheme.pink,
-      praiseWordAr: 'أحسنت يا',
-      praiseWordEn: 'Great job',
+      praiseWord: 'Amazing',
     ),
   ];
 
   void _goBack() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => MissionSelectionPage(
-          userLanguage: widget.userLanguage,
-          totalStars: widget.totalStars,
-        ),
-      ),
+      MaterialPageRoute(builder: (_) => const MissionSelectionPage()),
     );
   }
 
@@ -69,12 +52,10 @@ class _CharacterSelectionPageState extends State<CharacterSelectionPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),
-          content: Text(
-            isArabic
-                ? 'اكتب اسم الطفل أولًا ✨'
-                : 'Enter the child name first ✨',
+          content: const Text(
+            'Enter the child name first ✨',
             textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
       );
@@ -86,10 +67,9 @@ class _CharacterSelectionPageState extends State<CharacterSelectionPage> {
       MaterialPageRoute(
         builder: (_) => SpaceHubPage(
           childName: name,
-          praiseWord: isArabic ? selected.praiseWordAr : selected.praiseWordEn,
+          praiseWord: selected.praiseWord,
           characterImage: selected.imagePath,
-          userLanguage: widget.userLanguage,
-          totalStars: widget.totalStars,
+          totalStars: 0,
         ),
       ),
     );
@@ -137,31 +117,29 @@ class _CharacterSelectionPageState extends State<CharacterSelectionPage> {
                   Row(
                     children: [
                       _CircleBackButton(onTap: _goBack),
+
                       const Spacer(),
-                      _GlassTitle(isArabic: isArabic),
+
+                      const _GlassTitle(),
+
                       const Spacer(),
-                      _StarsBadge(totalStars: widget.totalStars),
+
+                      const _StarsBadge(totalStars: 0),
                     ],
                   ),
 
                   const SizedBox(height: 12),
 
                   Text(
-                    isArabic ? 'اختر شخصية الطفل' : 'Choose Your Character',
-                    textDirection: isArabic
-                        ? TextDirection.rtl
-                        : TextDirection.ltr,
-                    style: isArabic
-                        ? BeyondTheme.arabicTitle(size: 30)
-                        : BeyondTheme.title(size: 30),
+                    'Choose Your Character',
+                    textAlign: TextAlign.center,
+                    style: BeyondTheme.title(size: 30),
                   ),
 
                   const SizedBox(height: 6),
 
                   Text(
-                    isArabic
-                        ? 'اكتب اسم الطفل ثم ابدأ الرحلة'
-                        : 'Enter the child name then start the adventure',
+                    'Pick your astronaut and start the adventure',
                     textAlign: TextAlign.center,
                     style: BeyondTheme.normalText(
                       size: 18,
@@ -176,10 +154,7 @@ class _CharacterSelectionPageState extends State<CharacterSelectionPage> {
                       children: [
                         Expanded(
                           flex: 5,
-                          child: _PreviewPanel(
-                            character: selected,
-                            isArabic: isArabic,
-                          ),
+                          child: _PreviewPanel(character: selected),
                         ),
 
                         const SizedBox(width: 34),
@@ -198,7 +173,6 @@ class _CharacterSelectionPageState extends State<CharacterSelectionPage> {
                                         child: _CharacterCard(
                                           character: characters[0],
                                           selected: selectedIndex == 0,
-                                          isArabic: isArabic,
                                           onTap: () {
                                             setState(() {
                                               selectedIndex = 0;
@@ -213,7 +187,6 @@ class _CharacterSelectionPageState extends State<CharacterSelectionPage> {
                                         child: _CharacterCard(
                                           character: characters[1],
                                           selected: selectedIndex == 1,
-                                          isArabic: isArabic,
                                           onTap: () {
                                             setState(() {
                                               selectedIndex = 1;
@@ -226,10 +199,7 @@ class _CharacterSelectionPageState extends State<CharacterSelectionPage> {
 
                                   const SizedBox(height: 24),
 
-                                  _NameField(
-                                    controller: nameController,
-                                    isArabic: isArabic,
-                                  ),
+                                  _NameField(controller: nameController),
 
                                   const SizedBox(height: 24),
 
@@ -243,10 +213,10 @@ class _CharacterSelectionPageState extends State<CharacterSelectionPage> {
                                         horizontal: 26,
                                       ),
                                       decoration: BeyondTheme.glowButton(),
-                                      child: Text(
-                                        isArabic ? '🚀 انطلق' : '🚀 Start',
+                                      child: const Text(
+                                        '🚀 Start Adventure',
                                         textAlign: TextAlign.center,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 22,
                                           fontWeight: FontWeight.w900,
@@ -273,20 +243,16 @@ class _CharacterSelectionPageState extends State<CharacterSelectionPage> {
 }
 
 class _CharacterOption {
-  final String titleAr;
-  final String titleEn;
+  final String title;
   final String imagePath;
   final Color glow;
-  final String praiseWordAr;
-  final String praiseWordEn;
+  final String praiseWord;
 
   const _CharacterOption({
-    required this.titleAr,
-    required this.titleEn,
+    required this.title,
     required this.imagePath,
     required this.glow,
-    required this.praiseWordAr,
-    required this.praiseWordEn,
+    required this.praiseWord,
   });
 }
 
@@ -312,7 +278,9 @@ class _StarsBadge extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text('⭐', style: TextStyle(fontSize: 24)),
+
               const SizedBox(width: 8),
+
               Text('$totalStars', style: BeyondTheme.cardTitle(size: 22)),
             ],
           ),
@@ -323,9 +291,7 @@ class _StarsBadge extends StatelessWidget {
 }
 
 class _GlassTitle extends StatelessWidget {
-  final bool isArabic;
-
-  const _GlassTitle({required this.isArabic});
+  const _GlassTitle();
 
   @override
   Widget build(BuildContext context) {
@@ -338,12 +304,7 @@ class _GlassTitle extends StatelessWidget {
           decoration: BeyondTheme.mirrorNeonPanel(
             borderColor: BeyondTheme.cyan,
           ),
-          child: Text(
-            isArabic ? '⭐ الشخصية ⭐' : '⭐ CHARACTER ⭐',
-            style: isArabic
-                ? BeyondTheme.arabicTitle(size: 32)
-                : BeyondTheme.title(size: 32),
-          ),
+          child: Text('⭐ CHARACTER ⭐', style: BeyondTheme.title(size: 32)),
         ),
       ),
     );
@@ -352,14 +313,11 @@ class _GlassTitle extends StatelessWidget {
 
 class _PreviewPanel extends StatelessWidget {
   final _CharacterOption character;
-  final bool isArabic;
 
-  const _PreviewPanel({required this.character, required this.isArabic});
+  const _PreviewPanel({required this.character});
 
   @override
   Widget build(BuildContext context) {
-    final title = isArabic ? character.titleAr : character.titleEn;
-
     return ClipRRect(
       borderRadius: BorderRadius.circular(38),
       child: BackdropFilter(
@@ -375,14 +333,9 @@ class _PreviewPanel extends StatelessWidget {
               Positioned(
                 top: 30,
                 child: Text(
-                  title,
+                  character.title,
                   textAlign: TextAlign.center,
-                  textDirection: isArabic
-                      ? TextDirection.rtl
-                      : TextDirection.ltr,
-                  style: isArabic
-                      ? BeyondTheme.arabicTitle(size: 30)
-                      : BeyondTheme.cardTitle(size: 30),
+                  style: BeyondTheme.cardTitle(size: 30),
                 ),
               ),
 
@@ -415,20 +368,16 @@ class _PreviewPanel extends StatelessWidget {
 class _CharacterCard extends StatelessWidget {
   final _CharacterOption character;
   final bool selected;
-  final bool isArabic;
   final VoidCallback onTap;
 
   const _CharacterCard({
     required this.character,
     required this.selected,
-    required this.isArabic,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final title = isArabic ? character.titleAr : character.titleEn;
-
     return GestureDetector(
       onTap: onTap,
       child: ClipRRect(
@@ -455,14 +404,9 @@ class _CharacterCard extends StatelessWidget {
                   right: 0,
                   bottom: 6,
                   child: Text(
-                    title,
+                    character.title,
                     textAlign: TextAlign.center,
-                    textDirection: isArabic
-                        ? TextDirection.rtl
-                        : TextDirection.ltr,
-                    style: isArabic
-                        ? BeyondTheme.arabicTitle(size: 20)
-                        : BeyondTheme.cardTitle(size: 20),
+                    style: BeyondTheme.cardTitle(size: 20),
                   ),
                 ),
 
@@ -487,9 +431,8 @@ class _CharacterCard extends StatelessWidget {
 
 class _NameField extends StatelessWidget {
   final TextEditingController controller;
-  final bool isArabic;
 
-  const _NameField({required this.controller, required this.isArabic});
+  const _NameField({required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -507,14 +450,10 @@ class _NameField extends StatelessWidget {
           child: TextField(
             controller: controller,
             textAlign: TextAlign.center,
-            style: isArabic
-                ? BeyondTheme.arabicTitle(size: 22)
-                : BeyondTheme.normalText(size: 22),
+            style: BeyondTheme.normalText(size: 22),
             decoration: InputDecoration(
               border: InputBorder.none,
-              hintText: isArabic
-                  ? 'اكتب اسم الطفل هنا'
-                  : 'Enter child name here',
+              hintText: 'Enter child name here',
               hintStyle: BeyondTheme.normalText(
                 size: 18,
                 color: Colors.white.withOpacity(0.55),

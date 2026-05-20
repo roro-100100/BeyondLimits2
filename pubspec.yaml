@@ -65,5 +65,18 @@ flutter:
     - assets/audio/words/najm.mp3
     - assets/audio/words/noor.mp3
     - assets/audio/words/qamar.mp3
+    - assets/audio/words/alsamaa.mp3
+    - assets/audio/words/fi.mp3
+    - assets/audio/words/najmatan.mp3
+    - assets/audio/words/qamaran.mp3
+    - assets/audio/words/raaytu.mp3
+    - assets/audio/sentences/raaytu_najmatan_fi_alsamaa.mp3
+    - assets/audio/sentences/raaytu_qamaran_fi_alsamaa.mp3
+
+
+
+
+
+
 
 

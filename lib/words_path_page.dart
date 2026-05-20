@@ -4,12 +4,13 @@ import 'package:audioplayers/audioplayers.dart';
 
 import 'beyond_theme.dart';
 import 'words_game_page.dart';
+import 'game_words_stage2.dart';
+import 'space_dictionary_page.dart';
 
 class WordsPathPage extends StatefulWidget {
   final String childName;
   final String praiseWord;
   final String characterImage;
-  final String userLanguage;
   final int totalStars;
 
   const WordsPathPage({
@@ -17,7 +18,6 @@ class WordsPathPage extends StatefulWidget {
     required this.childName,
     required this.praiseWord,
     required this.characterImage,
-    required this.userLanguage,
     required this.totalStars,
   });
 
@@ -31,10 +31,9 @@ class _WordsPathPageState extends State<WordsPathPage>
 
   final AudioPlayer _effectPlayer = AudioPlayer();
 
-  final int unlockedLevel = 1;
-  late int currentStars;
+  final int unlockedLevel = 2;
 
-  bool get isArabic => widget.userLanguage == 'ar';
+  late int currentStars;
 
   @override
   void initState() {
@@ -49,8 +48,10 @@ class _WordsPathPageState extends State<WordsPathPage>
   }
 
   Future<void> _playEffect(String path) async {
-    await _effectPlayer.stop();
-    await _effectPlayer.play(AssetSource(path));
+    try {
+      await _effectPlayer.stop();
+      await _effectPlayer.play(AssetSource(path));
+    } catch (_) {}
   }
 
   @override
@@ -68,12 +69,10 @@ class _WordsPathPageState extends State<WordsPathPage>
         backgroundColor: BeyondTheme.purple,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        content: Text(
-          isArabic
-              ? 'أنهِ المرحلة السابقة أولًا ✨'
-              : 'Finish the previous level first ✨',
+        content: const Text(
+          'Finish the previous level first ✨',
           textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -89,7 +88,6 @@ class _WordsPathPageState extends State<WordsPathPage>
           childName: widget.childName,
           praiseWord: widget.praiseWord,
           characterImage: widget.characterImage,
-          userLanguage: widget.userLanguage,
           totalStars: currentStars,
         ),
       ),
@@ -100,6 +98,39 @@ class _WordsPathPageState extends State<WordsPathPage>
         currentStars = result;
       });
     }
+  }
+
+  Future<void> _openLevelTwo() async {
+    await _playEffect('audio/effects/magic_star.mp3');
+
+    final result = await Navigator.push<int>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => GameWordsStage2(
+          childName: widget.childName,
+          praiseWord: widget.praiseWord,
+          characterImage: widget.characterImage,
+          totalStars: currentStars,
+        ),
+      ),
+    );
+
+    if (result != null && mounted) {
+      setState(() {
+        currentStars = result;
+      });
+    }
+  }
+
+  void _openDictionary() async {
+    await _playEffect('audio/effects/magic_star.mp3');
+
+    if (!mounted) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SpaceDictionaryPage()),
+    );
   }
 
   void _goHome() async {
@@ -146,7 +177,13 @@ class _WordsPathPageState extends State<WordsPathPage>
                       Positioned(
                         top: 0,
                         right: 0,
-                        child: _StarsBadge(totalStars: currentStars),
+                        child: Row(
+                          children: [
+                            _DictionaryButton(onTap: _openDictionary),
+                            const SizedBox(width: 12),
+                            _StarsBadge(totalStars: currentStars),
+                          ],
+                        ),
                       ),
 
                       Align(
@@ -155,24 +192,15 @@ class _WordsPathPageState extends State<WordsPathPage>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              isArabic
-                                  ? 'مسار كوكب الكلمات'
-                                  : 'Words Planet Path',
-                              textDirection: isArabic
-                                  ? TextDirection.rtl
-                                  : TextDirection.ltr,
+                              'Words Planet Path',
                               textAlign: TextAlign.center,
-                              style: isArabic
-                                  ? BeyondTheme.arabicTitle(size: 36)
-                                  : BeyondTheme.title(size: 34),
+                              style: BeyondTheme.title(size: 34),
                             ),
 
                             const SizedBox(height: 8),
 
                             Text(
-                              isArabic
-                                  ? 'هيا ننطلق في رحلة الكلمات 🚀'
-                                  : 'Let’s start the words adventure 🚀',
+                              'Let’s start the words adventure 🚀',
                               textAlign: TextAlign.center,
                               style: BeyondTheme.normalText(
                                 size: 18,
@@ -200,7 +228,6 @@ class _WordsPathPageState extends State<WordsPathPage>
                           number: 1,
                           unlocked: unlockedLevel >= 1,
                           glow: BeyondTheme.pink,
-                          isArabic: isArabic,
                           onTap: _openLevelOne,
                         ),
                       ),
@@ -212,19 +239,17 @@ class _WordsPathPageState extends State<WordsPathPage>
                           number: 2,
                           unlocked: unlockedLevel >= 2,
                           glow: BeyondTheme.cyan,
-                          isArabic: isArabic,
-                          onTap: _lockedMessage,
+                          onTap: _openLevelTwo,
                         ),
                       ),
 
                       Positioned(
-                        right: 700,
+                        right: 680,
                         top: 350 + float,
                         child: _LevelStar(
                           number: 3,
                           unlocked: unlockedLevel >= 3,
                           glow: BeyondTheme.violet,
-                          isArabic: isArabic,
                           onTap: _lockedMessage,
                         ),
                       ),
@@ -236,7 +261,6 @@ class _WordsPathPageState extends State<WordsPathPage>
                           number: 4,
                           unlocked: unlockedLevel >= 4,
                           glow: BeyondTheme.orange,
-                          isArabic: isArabic,
                           onTap: _lockedMessage,
                         ),
                       ),
@@ -256,14 +280,12 @@ class _LevelStar extends StatefulWidget {
   final int number;
   final bool unlocked;
   final Color glow;
-  final bool isArabic;
   final VoidCallback onTap;
 
   const _LevelStar({
     required this.number,
     required this.unlocked,
     required this.glow,
-    required this.isArabic,
     required this.onTap,
   });
 
@@ -327,9 +349,7 @@ class _LevelStarState extends State<_LevelStar> {
                       border: Border.all(color: widget.glow, width: 1.5),
                     ),
                     child: Text(
-                      widget.isArabic
-                          ? 'المرحلة ${widget.number}'
-                          : 'Level ${widget.number}',
+                      'Level ${widget.number}',
                       style: BeyondTheme.normalText(size: 15),
                     ),
                   ),
@@ -367,6 +387,46 @@ class _StarsBadge extends StatelessWidget {
               const SizedBox(width: 8),
               Text('$totalStars', style: BeyondTheme.normalText(size: 18)),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DictionaryButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _DictionaryButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(22),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(22),
+          onTap: onTap,
+          child: Container(
+            height: 54,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BeyondTheme.mirrorNeonPanel(
+              borderColor: BeyondTheme.cyan,
+              radius: 22,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.menu_book_rounded,
+                  color: Colors.white,
+                  size: 25,
+                ),
+                const SizedBox(width: 8),
+                Text('Dictionary', style: BeyondTheme.normalText(size: 15)),
+              ],
+            ),
           ),
         ),
       ),
@@ -421,7 +481,9 @@ class _WordsSpacePathPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
 }
 
 class _HomeButton extends StatelessWidget {
